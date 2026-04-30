@@ -4,27 +4,41 @@ A standalone, serverless web application designed to assist engineers and qualit
 
 ## 🚀 Features
 
-- **Tabbed Interface**: Separate tabs for Overview and D0 through D8 for focused documentation.
+### 🛠️ Core Framework
+- **Full 8D Lifecycle**: Structured documentation from D0 (Preparation) through D8 (Recognition).
 - **Dynamic Overview**: A real-time aggregation tab that summarizes all entries from the 8D process into a single, structured report.
-- **Context-Aware Editing**: Project Title and Date are editable only in the Overview tab to prevent accidental changes while working through disciplines.
-- **Discipline-Specific Tools**:
-  - **D0**: Preliminary Problem Statement and Additional Details.
-  - **D1**: Dynamic team formation tool to add members with Name and Role.
-  - **D4**: Dynamic Hypothesis and Research Question management.
-- **Offline Capable**: Single HTML file with no server requirements.
-- **Mobile Friendly**: Fully responsive design optimized for Android and iOS devices, including native dark-mode support for date pickers.
-- **Persistence**:
-  - **Save/Load**: Export your current progress as a `.json` file and re-import it later for further edits.
-  - **Professional Export**: Generate high-quality PDFs. The app automatically converts the night-mode UI to a professional light-mode layout for the PDF to ensure readability and print-compatibility.
-- **Aesthetics**: Modern Night Mode theme using a deep slate palette for reduced eye strain.
+- **Interactive Navigation**:
+  - **Tabbed Interface**: Focused editing across separate tabs for Overview, D0-D8, and Tools.
+  - **Quick Jump**: Click any section in the Overview report to navigate directly to its respective input tab.
+  - **Contextual Tooltips**: Hover over tab labels to see descriptions of each discipline.
+  - **Sticky Navigation**: The tab bar remains floating at the top for effortless navigation during long reports.
 
-> [!IMPORTANT]
-> **Development Status**: D0 and D1 specific inputs are complete. Implementation of specialized input fields for D2 through D8 is currently pending.
+### 🧠 Discipline-Specific Intelligence
+- **D0 - D3**: Structured inputs for preliminary statements, team formation, and interim containment.
+- **D4 (Define and Verify Root Cause)**: Advanced nested analysis allowing multiple Hypotheses, each containing its own set of Research Questions with tracking for:
+  - Status (Quick-fill options: Open, Ongoing, Completed, Cancelled)
+  - Summary of Findings
+  - Path Forward
+- **D5 (Choose & Verify Permanent Corrective Actions)**: Dynamic link to D4, allowing users to select specific root causes and map them to multiple Potential Permanent Corrective Actions (PPCAs).
+- **D6 (Implement & Validate)**: Validation tracking for all D5 actions, including Status and detailed Validation Results.
+- **D7 (Prevent Recurrence)**: Systemic action tracking with summaries, status, and Effective Completion Dates.
+- **D8**: Recognition and lessons learned documentation.
+- **Tools Tab**: A dedicated space for upcoming engineering tools (e.g., Fishbone/Ishikawa Chart).
+
+### 💾 Persistence & Export
+- **JSON Save/Load**: Export your entire project state as a `.json` file and re-import it later to resume work.
+- **Professional PDF Export**: Generates high-quality PDFs. The app automatically converts the Night-Mode UI to a professional light-mode layout for the PDF to ensure print-compatibility and readability.
+
+### 🎨 UI/UX & Technicals
+- **Night Mode First**: Modern deep slate palette designed to reduce eye strain.
+- **Mobile Optimized**: Fully responsive design compatible with Android and iOS.
+- **Smart Inputs**: Hybrid status fields that provide quick-fill dropdowns while allowing custom text entry.
+- **Serverless Architecture**: Single HTML file utilizing Tailwind CSS and `html2pdf.js` via CDN—no installation or server required.
 
 ## 🛠️ Technical Stack
 
-- **UI/Styling**: [Tailwind CSS](https://tailwindcss.com/) (via CDN)
-- **PDF Engine**: [html2pdf.js](https://html2pdf.appsbrewery.com/) (via CDN)
+- **UI/Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **PDF Engine**: [html2pdf.js](https://html2pdf.appsbrewery.com/)
 - **State Management**: Vanilla JavaScript with JSON serialization.
 
 ## 📖 How to Use
@@ -32,7 +46,7 @@ A standalone, serverless web application designed to assist engineers and qualit
 1. Open `index.html` in any modern web browser.
 2. Fill in the project details in the **Overview** tab.
 3. Navigate through the **D0-D8** tabs to document your problem-solving process.
-4. Use the "+ Add" buttons in **D1** (Team) and **D4** (Hypotheses) for dynamic lists.
+4. Use the **Tools** tab to access helper resources (Coming soon).
 5. **To Save**: Click "Save Project (JSON)" to download a backup of your work.
 6. **To Edit**: Click "Import Project" and select your previously saved `.json` file.
 7. **To Share**: Click "Export PDF" to generate a shareable document.

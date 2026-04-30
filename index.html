@@ -22,12 +22,18 @@
 <body class="bg-slate-950 text-slate-100 min-h-screen pb-20">
 
     <div class="max-w-4xl mx-auto px-4 py-8">
+        <datalist id="status-options">
+            <option value="Open"></option>
+            <option value="Ongoing"></option>
+            <option value="Completed"></option>
+            <option value="Cancelled"></option>
+        </datalist>
         <header class="mb-8 text-center">
             <h1 class="text-3xl font-bold text-slate-100 mb-2">8D Problem Solving Helper</h1>
             <p class="text-slate-400">Systematic root cause analysis and corrective action documentation</p>
         </header>
 
-        <div class="no-print sticky top-4 z-20 mb-8 flex flex-wrap gap-3 justify-center bg-slate-900/80 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-slate-800">
+        <div class="no-print mb-8 flex flex-wrap gap-3 justify-center bg-slate-900/80 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-slate-800">
             <button onclick="exportPDF()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/></svg>
                 Export PDF
@@ -43,7 +49,7 @@
             </label>
         </div>
 
-        <div class="no-print mb-6">
+        <div class="no-print sticky top-0 z-20 bg-slate-950 mb-6">
             <div class="flex overflow-x-auto no-scrollbar border-b border-slate-800">
                 <button onclick="showTab('overview')" id="tab-overview" class="px-6 py-3 text-sm font-medium transition-all whitespace-nowrap tab-active">Overview</button>
                 <div id="tab-nav-container" class="flex"></div>
@@ -77,13 +83,14 @@
         const sectionsData = [
             { id: 'D0', title: 'Preliminary Problem Statement', desc: '', fields: [{ id: 'preliminary-statement', label: 'Preliminary Problem Statement', type: 'textarea' }, { id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
             { id: 'D1', title: 'D1: Team Formation', desc: 'Assemble a cross-functional team with the right skills and authority.', special: 'team', fields: [{ id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
-            { id: 'D2', title: 'D2: Problem Description', desc: 'Define the problem using the 5W2H method (Who, What, Where, When, Why, How, How Many).', fields: [{ id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
-            { id: 'D3', title: 'D3: Interim Containment Actions', desc: 'Implement temporary actions to isolate the problem and protect the customer.', fields: [{ id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
-            { id: 'D4', title: 'D4: Root Cause Analysis & Escape Points', desc: 'Identify the root cause and why it was not detected (Escape Point).', special: 'dynamic', fields: [{ id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
-            { id: 'D5', title: 'D5: Choose & Verify Permanent Corrective Actions', desc: 'Determine and verify the best permanent solution to eliminate the root cause.', fields: [{ id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
-            { id: 'D6', title: 'D6: Implement & Validate Permanent Corrective Actions', desc: 'Deploy the solution and monitor the results to ensure it works.', fields: [{ id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
-            { id: 'D7', title: 'D7: Prevent Recurrence', desc: 'Update systems, standards, and procedures to prevent the problem from happening again.', fields: [{ id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
-            { id: 'D8', title: 'D8: Team & Individual Recognition', desc: 'Document lessons learned and recognize the team’s efforts.', fields: [{ id: 'additional-details', label: 'Additional Details', type: 'textarea' }] }
+            { id: 'D2', title: 'D2: Finalize Problem Statement', desc: 'Define the problem using the 5W2H method (Who, What, Where, When, Why, How, How Many).', fields: [{ id: 'problem-statement', label: 'Problem Statement', type: 'textarea' }, { id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
+            { id: 'D3', title: 'D3: Interim Containment Actions', desc: 'Implement temporary actions to isolate the problem and protect the customer.', fields: [{ id: 'interim-actions', label: 'Interim Containment Actions', type: 'textarea' }, { id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
+            { id: 'D4', title: 'D4: Define and Verify Root Cause', desc: 'Identify the potential root cause.', special: 'root-cause', fields: [{ id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
+            { id: 'D5', title: 'D5: Choose & Verify Permanent Corrective Actions', desc: 'Determine and verify the best permanent solution to eliminate the root cause.', special: 'corrective-actions', fields: [{ id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
+            { id: 'D6', title: 'D6: Implement & Validate Permanent Corrective Actions', desc: 'Deploy the solution and monitor the results to ensure it works.', special: 'ca-validation', fields: [{ id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
+            { id: 'D7', title: 'D7: Prevent Recurrence', desc: 'Update systems, standards, and procedures to prevent the problem from happening again.', special: 'actions', fields: [{ id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
+            { id: 'D8', title: 'D8: Team & Individual Recognition', desc: 'Document lessons learned and recognize the team’s efforts.', fields: [{ id: 'additional-details', label: 'Additional Details', type: 'textarea' }] },
+            { id: 'Tools', title: 'Tools', desc: 'Useful tools and resources', fields: [] }
         ];
 
         function init() {
@@ -95,6 +102,7 @@
                 tabBtn.id = `tab-${s.id}`;
                 tabBtn.className = 'px-6 py-3 text-sm font-medium transition-all whitespace-nowrap text-slate-400 hover:text-slate-200';
                 tabBtn.innerText = s.id;
+                if (s.desc) tabBtn.title = s.desc;
                 tabBtn.onclick = () => showTab(s.id);
                 navContainer.appendChild(tabBtn);
 
@@ -103,22 +111,15 @@
                 tabDiv.className = 'tab-content hidden space-y-6';
                 
                 let specialContent = '';
-                if (s.special === 'dynamic') {
+                if (s.special === 'root-cause') {
                     specialContent = `
                         <div class="mt-6 space-y-6">
                             <div>
                                 <label class="block text-sm font-semibold text-slate-300 mb-2 flex items-center justify-between">
-                                    Hypotheses
-                                    <button onclick="addItem('hypotheses-${s.id}')" class="text-blue-400 hover:text-blue-300 text-xs font-bold uppercase">+ Add Hypothesis</button>
+                                    Hypotheses & Research Questions
+                                    <button onclick="addHypothesis('${s.id}')" class="text-blue-400 hover:text-blue-300 text-xs font-bold uppercase">+ Add Hypothesis</button>
                                 </label>
-                                <div id="hypotheses-${s.id}" class="space-y-2"></div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-300 mb-2 flex items-center justify-between">
-                                    Research Questions
-                                    <button onclick="addItem('research-${s.id}')" class="text-blue-400 hover:text-blue-300 text-xs font-bold uppercase">+ Add Question</button>
-                                </label>
-                                <div id="research-${s.id}" class="space-y-2"></div>
+                                <div id="root-cause-${s.id}" class="space-y-6"></div>
                             </div>
                         </div>
                     `;
@@ -134,6 +135,44 @@
                             </div>
                         </div>
                     `;
+                } else if (s.special === 'corrective-actions') {
+                    specialContent = `
+                        <div class="mt-6 space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-300 mb-2">Root Causes (from D4)</label>
+                                <div id="corrective-actions-${s.id}" class="space-y-4"></div>
+                                <button onclick="refreshD5RootCauses('${s.id}')" class="mt-4 text-slate-400 hover:text-slate-200 text-xs font-medium flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                    Refresh Hypotheses
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else if (s.special === 'ca-validation') {
+                    specialContent = `
+                        <div class="mt-6 space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-300 mb-2">Corrective Action Validation</label>
+                                <div id="ca-validation-${s.id}" class="space-y-4"></div>
+                                <button onclick="refreshD6Actions('${s.id}')" class="mt-4 text-slate-400 hover:text-slate-200 text-xs font-medium flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                                    Refresh Actions from D5
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                } else if (s.special === 'actions') {
+                    specialContent = `
+                        <div class="mt-6 space-y-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-300 mb-2 flex items-center justify-between">
+                                    Systemic Actions
+                                    <button onclick="addPreventativeAction('${s.id}')" class="text-blue-400 hover:text-blue-300 text-xs font-bold uppercase">+ Add Action</button>
+                                </label>
+                                <div id="prev-actions-${s.id}" class="space-y-3"></div>
+                            </div>
+                        </div>
+                    `;
                 }
 
                 tabDiv.innerHTML = `
@@ -142,18 +181,33 @@
                             <h2 class="text-xl font-bold text-slate-100">${s.title}</h2>
                             <p class="text-sm text-slate-400">${s.desc}</p>
                         </div>
-                        ${specialContent ? `<div class="mb-6">${specialContent}</div>` : ''}
-                        <div class="space-y-4">
-                            ${s.fields.map(f => `
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">${f.label}</label>
-                                    ${f.type === 'textarea' ? 
-                                        `<textarea id="${s.id}-${f.id}" rows="3" class="w-full px-3 py-2 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-y" placeholder="Enter details..." oninput="updateOverview()"></textarea>` : 
-                                        `<input type="text" id="${s.id}-${f.id}" class="w-full px-3 py-2 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter details..." oninput="updateOverview()">`
-                                    }
+                        ${s.id === 'Tools' ? `
+                            <div class="flex flex-col items-center justify-center py-12 text-slate-500 italic text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-4 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 00-1 1v1a2 2 0 11-4 0v-1a1 1 0 00-1-1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a1 1 0 00-1-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                                </svg>
+                                <p class="text-lg font-medium mb-4">Coming soon</p>
+                                <div class="space-y-2">
+                                    <p class="text-sm">Upcoming Tools:</p>
+                                    <ul class="text-xs text-slate-400 list-disc list-inside">
+                                        <li>Fishbone (Ishikawa) Chart</li>
+                                    </ul>
                                 </div>
-                            `).join('')}
-                        </div>
+                            </div>
+                        ` : `
+                            ${specialContent ? `<div class="mb-6">${specialContent}</div>` : ''}
+                            <div class="space-y-4">
+                                ${s.fields.map(f => `
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">${f.label}</label>
+                                        ${f.type === 'textarea' ? 
+                                            `<textarea id="${s.id}-${f.id}" rows="3" class="w-full px-3 py-2 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-y" placeholder="Enter details..." oninput="updateOverview()"></textarea>` : 
+                                            `<input type="text" id="${s.id}-${f.id}" class="w-full px-3 py-2 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Enter details..." oninput="updateOverview()">`
+                                        }
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `}
                     </div>
                 `;
                 contentContainer.appendChild(tabDiv);
@@ -211,7 +265,7 @@
                         const inputs = div.querySelectorAll('input');
                         return { name: inputs[0].value, role: inputs[1].value };
                     }).filter(m => m.name || m.role);
-
+            
                     if (members.length) {
                         contentHtml += `
                             <div class="mb-3">
@@ -224,31 +278,168 @@
                     }
                 }
 
-                if (s.special === 'dynamic') {
-                    const hyps = Array.from(document.querySelectorAll(`#hypotheses-${s.id} input`)).map(i => i.value).filter(v => v);
-                    const res = Array.from(document.querySelectorAll(`#research-${s.id} input`)).map(i => i.value).filter(v => v);
-                    
-                    if (hyps.length || res.length) {
-                        contentHtml += `
-                            <div class="mt-3 space-y-3 p-2 bg-slate-800/50 rounded-lg border border-slate-700/50">
-                                ${hyps.length ? `
-                                    <div>
-                                        <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Hypotheses</span>
-                                        <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-                                            ${hyps.map(h => `<li>${h}</li>`).join('')}
-                                        </ul>
+                if (s.special === 'corrective-actions') {
+                    const container = document.getElementById(`corrective-actions-${s.id}`);
+                    if (container) {
+                        const selectedRCs = Array.from(container.querySelectorAll('input[type="checkbox"]:checked')).map(cb => {
+                            const label = document.querySelector(`label[for="${cb.id}"]`);
+                            const hypText = label ? label.innerText : 'Unknown Root Cause';
+                            const ppcas = Array.from(document.querySelectorAll(`#ppca-list-${cb.id} textarea`)).map(t => t.value);
+                            return { hypothesis: hypText, actions: ppcas };
+                        });
+            
+                        if (selectedRCs.length) {
+                            contentHtml += `
+                                <div class="mt-3 space-y-3 p-3 bg-slate-800/50 rounded-lg border border-slate-700/50">
+                                    <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Verified Root Causes & Actions</span>
+                                    ${selectedRCs.map(rc => `
+                                        <div class="mb-3 last:mb-0">
+                                            <div class="text-xs font-bold text-slate-300 mb-1 flex items-center gap-2">
+                                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                                ${rc.hypothesis}
+                                            </div>
+                                            <ul class="list-disc list-inside text-xs text-slate-400 ml-3 space-y-1">
+                                                ${rc.actions.map(a => `<li>${a}</li>`).join('')}
+                                            </ul>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `;
+                        }
+                    }
+                }
+
+                if (s.special === 'ca-validation') {
+                    const container = document.getElementById(`ca-validation-${s.id}`);
+                    if (container) {
+                        const rcDivs = Array.from(container.querySelectorAll('.p-4'));
+                        if (rcDivs.length) {
+                            let validationHtml = rcDivs.map(div => {
+                                const hypText = div.querySelector('.text-xs.font-bold').innerText;
+                                 const actions = Array.from(div.querySelectorAll('.p-3')).map(actDiv => {
+                                     const actionText = actDiv.querySelector('.text-xs.text-slate-200').innerText;
+                                     const status = actDiv.querySelector('input').value;
+                                     const result = actDiv.querySelector('textarea').value;
+                                     return { action: actionText, status, result };
+                                 });
+            
+                                 if (actions.length === 0) return '';
+
+                                return `
+                                    <div class="mb-3">
+                                        <div class="text-xs font-bold text-slate-300 mb-1 flex items-center gap-2">
+                                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                            ${hypText}
+                                        </div>
+                                        <div class="ml-3 space-y-2">
+                                            ${actions.map(a => `
+                                                <div class="text-[11px] p-2 bg-slate-800/40 rounded border border-slate-700/50">
+                                                    <div class="text-slate-200 font-medium mb-1">${a.action}</div>
+                                                    <div class="grid grid-cols-10 gap-2 text-slate-400">
+                                                        <div class="col-span-3"><span class="text-slate-500 uppercase text-[9px] block">Status</span> ${a.status}</div>
+                                                        <div class="col-span-7"><span class="text-slate-500 uppercase text-[9px] block">Validation Result</span> ${a.result}</div>
+                                                    </div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
                                     </div>
-                                ` : ''}
-                                ${res.length ? `
-                                    <div>
-                                        <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Research Questions</span>
-                                        <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
-                                            ${res.map(r => `<li>${r}</li>`).join('')}
-                                        </ul>
+                                `;
+                            }).join('');
+
+                            if (validationHtml) {
+                                contentHtml += `
+                                    <div class="mt-3 p-3 bg-slate-800/50 rounded-lg border border-slate-700/50">
+                                        <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Implementation & Validation</span>
+                                        ${validationHtml}
                                     </div>
-                                ` : ''}
-                            </div>
-                        `;
+                                `;
+                            }
+                        }
+                    }
+                }
+
+                if (s.special === 'actions') {
+                    const container = document.getElementById(`prev-actions-${s.id}`);
+                    if (container) {
+                        const actions = Array.from(container.querySelectorAll('.p-3')).map(div => {
+                            const inputs = div.querySelectorAll('input, textarea');
+                            return {
+                                action: inputs[0].value,
+                                summary: inputs[1].value,
+                                status: inputs[2].value,
+                                date: inputs[3].value
+                            };
+                        }).filter(a => a.action);
+            
+                        if (actions.length) {
+                            contentHtml += `
+                                <div class="mt-3 p-3 bg-slate-800/50 rounded-lg border border-slate-700/50">
+                                    <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Systemic Actions</span>
+                                    <div class="space-y-3">
+                                        ${actions.map(a => `
+                                            <div class="text-[11px] p-2 bg-slate-800/40 rounded border border-slate-700/50">
+                                                <div class="text-slate-200 font-medium mb-1">${a.action}</div>
+                                                ${a.summary ? `<div class="text-slate-400 mb-2 whitespace-pre-wrap italic">${a.summary}</div>` : ''}
+                                                <div class="grid grid-cols-2 gap-2 text-slate-400">
+                                                    <div><span class="text-slate-500 uppercase text-[9px] block">Status</span> ${a.status}</div>
+                                                    <div><span class="text-slate-500 uppercase text-[9px] block">Completion Date</span> ${a.date}</div>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                }
+            
+                if (s.special === 'root-cause') {
+                    const hypDivs = Array.from(document.querySelectorAll(`#root-cause-${s.id} > div`));
+                    if (hypDivs.length) {
+                        let hypsHtml = hypDivs.map(div => {
+                            const hypText = div.querySelector('input').value;
+                                 const rqs = Array.from(div.querySelectorAll('.research-questions > div')).map(rqDiv => {
+                                     const inputs = rqDiv.querySelectorAll('input, textarea');
+                                     return {
+                                         question: inputs[0]?.value || '',
+                                         status: inputs[1]?.value || '',
+                                         summary: inputs[2]?.value || '',
+                                         path: inputs[3]?.value || ''
+                                     };
+                                 }).filter(rq => rq.question);
+
+                            if (!hypText && rqs.length === 0) return '';
+                            
+                            return `
+                                <div class="mb-4">
+                                    <div class="text-xs font-bold text-slate-300 mb-2 flex items-center gap-2">
+                                        <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                                        ${hypText || 'Unnamed Hypothesis'}
+                                    </div>
+                                    <div class="ml-3 space-y-2">
+                                        ${rqs.map(rq => `
+                                            <div class="text-[11px] p-2 bg-slate-800/40 rounded border border-slate-700/50">
+                                                <div class="text-slate-200 font-medium mb-1">${rq.question}</div>
+                                                <div class="grid grid-cols-10 gap-2 text-slate-400">
+                                                    <div class="col-span-2"><span class="text-slate-500 uppercase text-[9px] block">Status</span> ${rq.status}</div>
+                                                    <div class="col-span-4 whitespace-pre-wrap"><span class="text-slate-500 uppercase text-[9px] block">Summary of Findings</span>${rq.summary}</div>
+                                                    <div class="col-span-4 whitespace-pre-wrap"><span class="text-slate-500 uppercase text-[9px] block">Path Forward</span>${rq.path}</div>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+
+                        if (hypsHtml) {
+                            contentHtml += `
+                                <div class="mt-3 p-3 bg-slate-800/50 rounded-lg border border-slate-700/50">
+                                    <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Hypotheses & Research</span>
+                                    ${hypsHtml}
+                                </div>
+                            `;
+                        }
                     }
                 }
 
@@ -257,29 +448,30 @@
                         const val = document.getElementById(`${s.id}-${f.id}`)?.value || '';
                         if (val) {
                             contentHtml += `
-                                <div class="mb-3">
-                                    <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">${f.label}</span>
-                                    <p class="text-slate-200 text-sm leading-relaxed">${val}</p>
-                                </div>
+                                 <div class="mb-3">
+                                     <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">${f.label}</span>
+                                     <p class="text-slate-200 text-sm leading-relaxed whitespace-pre-wrap">${val}</p>
+                                 </div>
                             `;
                         }
                     });
                 }
 
-                if (contentHtml) {
-                    const sectionDiv = document.createElement('div');
-                    sectionDiv.className = 'bg-slate-900/50 p-4 rounded-xl border border-slate-800 transition-all hover:border-slate-700';
-                    sectionDiv.innerHTML = `
-                        <div class="flex items-center gap-2 mb-3 border-b border-slate-800 pb-2">
-                            <span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">${s.id}</span>
-                            <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">${s.title}</h3>
-                        </div>
-                        <div class="space-y-2">
-                            ${contentHtml}
-                        </div>
-                    `;
-                    summary.appendChild(sectionDiv);
-                }
+                    if (contentHtml) {
+                        const sectionDiv = document.createElement('div');
+                        sectionDiv.className = 'bg-slate-900/50 p-4 rounded-xl border border-slate-800 transition-all hover:border-slate-700 cursor-pointer';
+                        sectionDiv.onclick = () => showTab(s.id);
+                        sectionDiv.innerHTML = `
+                            <div class="flex items-center gap-2 mb-3 border-b border-slate-800 pb-2">
+                                <span class="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">${s.id}</span>
+                                <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">${s.title}</h3>
+                            </div>
+                            <div class="space-y-2">
+                                ${contentHtml}
+                            </div>
+                        `;
+                        summary.appendChild(sectionDiv);
+                    }
             });
 
             if (summary.innerHTML === '') {
@@ -293,6 +485,231 @@
                 `;
             }
         }
+        function addHypothesis(sectionId) {
+            const container = document.getElementById(`root-cause-${sectionId}`);
+            const hypId = 'hyp-' + Date.now();
+            const div = document.createElement('div');
+            div.className = 'p-4 bg-slate-800/50 border border-slate-700 rounded-xl space-y-4 group';
+            div.id = hypId;
+            div.innerHTML = `
+                <div class="flex gap-2 items-center justify-between">
+                    <div class="flex gap-2 items-center flex-1">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Hypothesis:</span>
+                        <input type="text" class="flex-1 px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium" placeholder="State the hypothesis..." oninput="updateOverview()">
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="addResearchQuestion('${hypId}')" class="text-blue-400 hover:text-blue-300 text-xs font-bold uppercase">+ Add Question</button>
+                        <button onclick="this.closest('.group').remove(); updateOverview();" class="p-1 text-slate-500 hover:text-red-400 transition font-bold">✕</button>
+                    </div>
+                </div>
+                <div class="research-questions space-y-3 pl-4 border-l-2 border-slate-700"></div>
+            `;
+            container.appendChild(div);
+        }
+
+        function addResearchQuestion(hypId) {
+            const hypDiv = document.getElementById(hypId);
+            const rqContainer = hypDiv.querySelector('.research-questions');
+            const div = document.createElement('div');
+            div.className = 'p-3 bg-slate-900/50 border border-slate-700/50 rounded-lg space-y-3 group';
+            div.innerHTML = `
+                <div class="flex gap-2 items-center justify-between">
+                    <div class="flex gap-2 items-center flex-1">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Question:</span>
+                        <input type="text" class="flex-1 px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Enter research question..." oninput="updateOverview()">
+                    </div>
+                    <button onclick="this.closest('.group').remove(); updateOverview();" class="p-1 text-slate-500 hover:text-red-400 transition font-bold">✕</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Status</label>
+                        <input type="text" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs" placeholder="Open, Ongoing, Completed, Cancelled" oninput="updateOverview()">
+                    </div>
+                    <div class="md:col-span-1">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Summary of Findings</label>
+                        <textarea rows="2" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs resize-none" placeholder="Key result..." oninput="updateOverview()"></textarea>
+                    </div>
+                    <div class="md:col-span-1">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Path Forward</label>
+                        <textarea rows="2" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs resize-none" placeholder="Next step..." oninput="updateOverview()"></textarea>
+                    </div>
+                </div>
+            `;
+            rqContainer.appendChild(div);
+        }
+
+        function addResearchQuestion(hypId) {
+            const hypDiv = document.getElementById(hypId);
+            const rqContainer = hypDiv.querySelector('.research-questions');
+            const div = document.createElement('div');
+            div.className = 'p-3 bg-slate-900/50 border border-slate-700/50 rounded-lg space-y-3 group';
+            div.innerHTML = `
+                <div class="flex gap-2 items-center justify-between">
+                    <div class="flex gap-2 items-center flex-1">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Question:</span>
+                        <input type="text" class="flex-1 px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Enter research question..." oninput="updateOverview()">
+                    </div>
+                    <button onclick="this.closest('.group').remove(); updateOverview();" class="p-1 text-slate-500 hover:text-red-400 transition font-bold">✕</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Status</label>
+                        <input type="text" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs" placeholder="Open, Ongoing, Completed, Cancelled" oninput="updateOverview()">
+                    </div>
+                    <div class="md:col-span-1">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Summary of Findings</label>
+                        <textarea rows="2" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs resize-none" placeholder="Key result..." oninput="updateOverview()"></textarea>
+                    </div>
+                    <div class="md:col-span-1">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Path Forward</label>
+                        <textarea rows="2" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs resize-none" placeholder="Next step..." oninput="updateOverview()"></textarea>
+                    </div>
+                </div>
+            `;
+            rqContainer.appendChild(div);
+        }
+
+        function refreshD5RootCauses(sectionId) {
+            const container = document.getElementById(`corrective-actions-${sectionId}`);
+            container.innerHTML = '';
+            
+            const d4Container = document.getElementById('root-cause-D4');
+            if (!d4Container) return;
+
+            const hypBlocks = Array.from(d4Container.children);
+            if (hypBlocks.length === 0) {
+                container.innerHTML = '<p class="text-slate-500 italic text-xs">No hypotheses found in D4. Please add some first.</p>';
+                return;
+            }
+
+            hypBlocks.forEach((block, index) => {
+                const hypInput = block.querySelector('.flex > .flex-1 > input');
+                if (!hypInput) return;
+
+                const hypText = hypInput.value || `Hypothesis ${index + 1}`;
+                const hypId = `rc-tick-${index}`;
+                const div = document.createElement('div');
+                div.className = 'p-3 bg-slate-800/30 border border-slate-700 rounded-xl space-y-3 transition-all';
+                div.id = `container-${hypId}`;
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="${hypId}" class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-blue-600 focus:ring-blue-500" onchange="toggleRootCause('${hypId}')">
+                        <label for="${hypId}" class="text-sm text-slate-200 cursor-pointer select-none">${hypText}</label>
+                    </div>
+                    <div id="ppca-section-${hypId}" class="hidden space-y-3 pl-7 border-l-2 border-blue-500/30">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase">Potential Permanent Corrective Actions</span>
+                            <button onclick="addPPCA('${hypId}')" class="text-blue-400 hover:text-blue-300 text-xs font-bold uppercase">+ Add Action</button>
+                        </div>
+                        <div id="ppca-list-${hypId}" class="space-y-2"></div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function toggleRootCause(hypId) {
+            const checkbox = document.getElementById(hypId);
+            const section = document.getElementById(`ppca-section-${hypId}`);
+            section.classList.toggle('hidden', !checkbox.checked);
+            updateOverview();
+        }
+
+        function addPPCA(hypId) {
+            const container = document.getElementById(`ppca-list-${hypId}`);
+            const div = document.createElement('div');
+            div.className = 'flex gap-2 items-start group';
+            div.innerHTML = `
+                <textarea rows="1" class="flex-1 px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm resize-y" placeholder="Describe the corrective action..." oninput="updateOverview()"></textarea>
+                <button onclick="this.parentElement.remove(); updateOverview();" class="p-1 text-slate-500 hover:text-red-400 transition font-bold">✕</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function refreshD6Actions(sectionId) {
+            const container = document.getElementById(`ca-validation-${sectionId}`);
+            container.innerHTML = '';
+            
+            const d5Container = document.getElementById('corrective-actions-D5');
+            if (!d5Container) return;
+
+            const selectedRCs = Array.from(d5Container.querySelectorAll('input[type="checkbox"]:checked'));
+            if (selectedRCs.length === 0) {
+                container.innerHTML = '<p class="text-slate-500 italic text-xs">No root causes selected in D5. Please select at least one root cause and add actions.</p>';
+                return;
+            }
+
+            selectedRCs.forEach(cb => {
+                const hypText = cb.nextElementSibling.innerText;
+                const ppcaList = document.getElementById(`ppca-list-${cb.id}`);
+                const actions = Array.from(ppcaList.querySelectorAll('textarea'));
+                
+                if (actions.length === 0) return;
+
+                const rcDiv = document.createElement('div');
+                rcDiv.className = 'p-4 bg-slate-800/30 border border-slate-700 rounded-xl space-y-4 mb-6';
+                rcDiv.innerHTML = `
+                    <div class="text-xs font-bold text-slate-300 mb-2 flex items-center gap-2 border-b border-slate-700 pb-2">
+                        <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                        ${hypText}
+                    </div>
+                    <div class="space-y-4">
+                        ${actions.map((act, idx) => {
+                            const actionId = `d6-act-${cb.id}-${idx}`;
+                            return `
+                                <div class="p-3 bg-slate-900/50 border border-slate-700/50 rounded-lg space-y-3">
+                                    <div class="text-xs text-slate-200 font-medium italic mb-2">"${act.value || 'Unnamed Action'}"</div>
+                                    <div class="grid grid-cols-10 gap-3">
+                                        <div class="col-span-3">
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Status</label>
+                                            <input type="text" id="${actionId}-status" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs" placeholder="e.g., Implemented, Validating" oninput="updateOverview()">
+                                        </div>
+                                        <div class="col-span-7">
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Validation / Result</label>
+                                            <textarea rows="2" id="${actionId}-result" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs resize-none" placeholder="Enter validation results..." oninput="updateOverview()"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+                container.appendChild(rcDiv);
+            });
+        }
+
+        function addPreventativeAction(sectionId) {
+            const container = document.getElementById(`prev-actions-${sectionId}`);
+            const div = document.createElement('div');
+            div.className = 'p-3 bg-slate-900/50 border border-slate-700/50 rounded-lg space-y-3 group';
+            div.innerHTML = `
+                <div class="flex gap-2 items-center justify-between">
+                    <div class="flex gap-2 items-center flex-1">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Action:</span>
+                        <input type="text" class="flex-1 px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Describe systemic action..." oninput="updateOverview()">
+                    </div>
+                    <button onclick="this.closest('.group').remove(); updateOverview();" class="p-1 text-slate-500 hover:text-red-400 transition font-bold">✕</button>
+                </div>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Summary</label>
+                        <textarea rows="2" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs resize-none" placeholder="Enter summary of the action..." oninput="updateOverview()"></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Status</label>
+                            <input type="text" list="status-options" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs" placeholder="e.g., Planned, Implemented" oninput="updateOverview()">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Effective Completion Date</label>
+                            <input type="date" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs" oninput="updateOverview()">
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        }
+
         function addItem(containerId) {
             const container = document.getElementById(containerId);
             const div = document.createElement('div');
@@ -340,6 +757,7 @@
                 if (!contentTab) return;
                 const sectionEl = contentTab.querySelector('.section-card').cloneNode(true);
                 sectionEl.className = 'bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-6';
+                sectionEl.querySelectorAll('button').forEach(btn => btn.remove());
                 sectionEl.querySelectorAll('textarea, input').forEach(el => {
                     const span = document.createElement('div');
                     span.className = 'p-2 border-b border-slate-100 min-h-[2rem] text-slate-800';
@@ -368,9 +786,44 @@
                         return { name: inputs[0].value, role: inputs[1].value };
                     });
                 }
-                if (s.special === 'dynamic') {
-                    sectionData.hypotheses = Array.from(document.querySelectorAll(`#hypotheses-${s.id} input`)).map(i => i.value);
-                    sectionData.research = Array.from(document.querySelectorAll(`#research-${s.id} input`)).map(i => i.value);
+                if (s.special === 'root-cause') {
+                    sectionData.rootCause = Array.from(document.querySelectorAll(`#root-cause-${s.id} > div`)).map(div => {
+                        const hypText = div.querySelector('input').value;
+                        const rqs = Array.from(div.querySelectorAll('.research-questions > div')).map(rqDiv => {
+                            const inputs = rqDiv.querySelectorAll('input, textarea');
+                            return {
+                                question: inputs[0]?.value || '',
+                                status: inputs[1]?.value || '',
+                                summary: inputs[2]?.value || '',
+                                path: inputs[3]?.value || ''
+                            };
+                        });
+                        return { hypothesis: hypText, research: rqs };
+                    });
+                }
+                if (s.special === 'corrective-actions') {
+                    const container = document.getElementById(`corrective-actions-${s.id}`);
+                    if (container) {
+                        sectionData.correctiveActions = Array.from(container.querySelectorAll('input[type="checkbox"]:checked')).map(cb => {
+                            const hypText = cb.nextElementSibling.innerText;
+                            const ppcas = Array.from(document.querySelectorAll(`#ppca-list-${cb.id} textarea`)).map(t => t.value);
+                            return { hypothesis: hypText, actions: ppcas };
+                        });
+                    }
+                }
+                if (s.special === 'actions') {
+                    const container = document.getElementById(`prev-actions-${s.id}`);
+                    if (container) {
+                        sectionData.preventativeActions = Array.from(container.querySelectorAll('.p-3')).map(div => {
+                            const inputs = div.querySelectorAll('input, textarea');
+                            return {
+                                action: inputs[0].value,
+                                summary: inputs[1].value,
+                                status: inputs[2].value,
+                                date: inputs[3].value
+                            };
+                        });
+                    }
                 }
                 data.sections[s.id] = sectionData;
             });
@@ -397,21 +850,57 @@
                         const el = document.getElementById(`${s.id}-${f.id}`);
                         if (el) el.value = sectionData[f.id] || '';
                     });
-                    if (s.special === 'dynamic') {
-                        const hypContainer = document.getElementById(`hypotheses-${s.id}`);
-                        const resContainer = document.getElementById(`research-${s.id}`);
-                        hypContainer.innerHTML = ''; resContainer.innerHTML = '';
-                        (sectionData.hypotheses || []).forEach(val => {
-                            const div = document.createElement('div');
-                            div.className = 'flex gap-2 items-start group';
-                            div.innerHTML = `<input type="text" value="${val}" class="flex-1 px-3 py-2 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" oninput="updateOverview()"><button onclick="this.parentElement.remove(); updateOverview();" class="p-2 text-slate-500 hover:text-red-400 transition opacity-0 group-hover:opacity-100 font-bold">✕</button>`;
-                            hypContainer.appendChild(div);
-                        });
-                        (sectionData.research || []).forEach(val => {
-                            const div = document.createElement('div');
-                            div.className = 'flex gap-2 items-start group';
-                            div.innerHTML = `<input type="text" value="${val}" class="flex-1 px-3 py-2 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" oninput="updateOverview()"><button onclick="this.parentElement.remove(); updateOverview();" class="p-2 text-slate-500 hover:text-red-400 transition opacity-0 group-hover:opacity-100 font-bold">✕</button>`;
-                            resContainer.appendChild(div);
+                    if (s.special === 'root-cause') {
+                        const rcContainer = document.getElementById(`root-cause-${s.id}`);
+                        rcContainer.innerHTML = '';
+                        (sectionData.rootCause || []).forEach(item => {
+                            const hypId = 'hyp-' + Math.random().toString(36).substr(2, 9);
+                            const hypDiv = document.createElement('div');
+                            hypDiv.className = 'p-4 bg-slate-800/50 border border-slate-700 rounded-xl space-y-4 group';
+                            hypDiv.id = hypId;
+                            hypDiv.innerHTML = `
+                                <div class="flex gap-2 items-center justify-between">
+                                    <div class="flex gap-2 items-center flex-1">
+                                        <span class="text-xs font-bold text-slate-500 uppercase">Hypothesis:</span>
+                                        <input type="text" value="${item.hypothesis || ''}" class="flex-1 px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-medium" placeholder="State the hypothesis..." oninput="updateOverview()">
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button onclick="addResearchQuestion('${hypId}')" class="text-blue-400 hover:text-blue-300 text-xs font-bold uppercase">+ Add Question</button>
+                                        <button onclick="this.closest('.group').remove(); updateOverview();" class="p-1 text-slate-500 hover:text-red-400 transition font-bold">✕</button>
+                                    </div>
+                                </div>
+                                <div class="research-questions space-y-3 pl-4 border-l-2 border-slate-700"></div>
+                            `;
+                            rcContainer.appendChild(hypDiv);
+                            const rqContainer = hypDiv.querySelector('.research-questions');
+                            (item.research || []).forEach(rq => {
+                                const rqDiv = document.createElement('div');
+                                rqDiv.className = 'p-3 bg-slate-900/50 border border-slate-700/50 rounded-lg space-y-3 group';
+                                rqDiv.innerHTML = `
+                                    <div class="flex gap-2 items-center justify-between">
+                                        <div class="flex gap-2 items-center flex-1">
+                                            <span class="text-xs font-bold text-slate-500 uppercase">Question:</span>
+                                            <input type="text" value="${rq.question || ''}" class="flex-1 px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Enter research question..." oninput="updateOverview()">
+                                        </div>
+                                        <button onclick="this.closest('.group').remove(); updateOverview();" class="p-1 text-slate-500 hover:text-red-400 transition font-bold">✕</button>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Status</label>
+                                            <input type="text" value="${rq.status || ''}" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs" placeholder="e.g., Open, Verified" oninput="updateOverview()">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Summary of Findings</label>
+                                            <textarea rows="2" value="" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs resize-none" placeholder="Key result..." oninput="updateOverview()">${rq.summary || ''}</textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Path Forward</label>
+                                            <textarea rows="2" value="" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs resize-none" placeholder="Next step..." oninput="updateOverview()">${rq.path || ''}</textarea>
+                                        </div>
+                                    </div>
+                                `;
+                                rqContainer.appendChild(rqDiv);
+                            });
                         });
                     }
                     if (s.special === 'team') {
@@ -422,6 +911,84 @@
                             div.className = 'flex gap-2 items-start group';
                             div.innerHTML = `<input type="text" value="${m.name}" class="flex-1 px-3 py-2 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" oninput="updateOverview()"><input type="text" value="${m.role}" class="flex-1 px-3 py-2 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" oninput="updateOverview()"><button onclick="this.parentElement.remove(); updateOverview();" class="p-2 text-slate-500 hover:text-red-400 transition opacity-0 group-hover:opacity-100 font-bold">✕</button>`;
                             teamContainer.appendChild(div);
+                        });
+                    }
+                    if (s.special === 'corrective-actions') {
+                        refreshD5RootCauses(s.id);
+                        const savedCAs = sectionData.correctiveActions || [];
+                        const rootCauseDivs = Array.from(document.getElementById(`corrective-actions-${s.id}`).querySelectorAll('label'));
+                        
+                        savedCAs.forEach(saved => {
+                            const label = rootCauseDivs.find(l => l.innerText === saved.hypothesis);
+                            if (label) {
+                                const checkbox = document.getElementById(label.getAttribute('for'));
+                                if (checkbox) {
+                                    checkbox.checked = true;
+                                    toggleRootCause(checkbox.id);
+                                    const ppcaList = document.getElementById(`ppca-list-${checkbox.id}`);
+                                    (saved.actions || []).forEach(actionText => {
+                                        const div = document.createElement('div');
+                                        div.className = 'flex gap-2 items-start group';
+                                        div.innerHTML = `
+                                            <textarea rows="1" class="flex-1 px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm resize-y" placeholder="Describe the corrective action..." oninput="updateOverview()">${actionText}</textarea>
+                                            <button onclick="this.parentElement.remove(); updateOverview();" class="p-1 text-slate-500 hover:text-red-400 transition font-bold">✕</button>
+                                        `;
+                                        ppcaList.appendChild(div);
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    if (s.special === 'ca-validation') {
+                        refreshD6Actions(s.id);
+                        const savedVals = sectionData.caValidation || [];
+                        savedVals.forEach(saved => {
+                            const rcDiv = Array.from(document.getElementById(`ca-validation-${s.id}`).querySelectorAll('.p-4')).find(div => div.querySelector('.text-xs.font-bold').innerText === saved.hypothesis);
+                            if (rcDiv) {
+                                const actionDivs = rcDiv.querySelectorAll('.p-3');
+                                saved.actions.forEach((val, idx) => {
+                                    if (actionDivs[idx]) {
+                                        const inputs = actionDivs[idx].querySelectorAll('input, textarea');
+                                        inputs[1].value = val.status || '';
+                                        inputs[2].value = val.result || '';
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    if (s.special === 'actions') {
+                        const container = document.getElementById(`prev-actions-${s.id}`);
+                        container.innerHTML = '';
+                        (sectionData.preventativeActions || []).forEach((act, idx) => {
+                            const actionId = `prev-act-${idx}-${Math.random().toString(36).substr(2, 9)}`;
+                            const div = document.createElement('div');
+                            div.className = 'p-3 bg-slate-900/50 border border-slate-700/50 rounded-lg space-y-3 group';
+                            div.innerHTML = `
+                                <div class="flex gap-2 items-center justify-between">
+                                    <div class="flex gap-2 items-center flex-1">
+                                        <span class="text-xs font-bold text-slate-500 uppercase">Action:</span>
+                                        <input type="text" value="${act.action || ''}" class="flex-1 px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Describe systemic action..." oninput="updateOverview()">
+                                    </div>
+                                    <button onclick="this.closest('.group').remove(); updateOverview();" class="p-1 text-slate-500 hover:text-red-400 transition font-bold">✕</button>
+                                </div>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Summary</label>
+                                        <textarea rows="2" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs resize-none" placeholder="Enter summary of the action..." oninput="updateOverview()">${act.summary || ''}</textarea>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Status</label>
+                                            <input type="text" list="status-options" id="${actionId}-status" value="${act.status || ''}" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs" placeholder="e.g., Planned, Implemented" oninput="updateOverview()">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Effective Completion Date</label>
+                                            <input type="date" id="${actionId}-date" value="${act.date || ''}" class="w-full px-3 py-1 border border-slate-700 bg-slate-800 text-slate-100 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-xs" oninput="updateOverview()">
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            container.appendChild(div);
                         });
                     }
                 });
