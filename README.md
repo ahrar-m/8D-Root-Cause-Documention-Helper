@@ -1,3 +1,7 @@
+## ⚠️ Project No Longer Maintained
+
+This project is an activity of the past and is no longer being actively developed or maintained. 
+
 # 8D Problem Solving Helper
 
 A standalone, serverless web application designed to assist engineers and quality professionals in documenting the 8 Disciplines (8D) problem-solving process.
